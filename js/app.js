@@ -245,6 +245,7 @@ function buildResumeHTML(d){
   <style>
     body{font-family:'Georgia',serif;max-width:760px;margin:40px auto;color:#222;padding:0 24px;}
     h1{font-size:28px;margin-bottom:2px;}
+    h1:empty::before{content:'Your Name';color:#bbb;font-style:italic;}
     .title{color:#555;font-size:15px;margin-bottom:10px;}
     .meta{font-size:12.5px;color:#666;margin-bottom:18px;}
     h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #ccc;padding-bottom:4px;margin-top:26px;color:#333;}
@@ -254,7 +255,7 @@ function buildResumeHTML(d){
     ul{margin:6px 0 0 18px;padding:0;font-size:13.5px;}
     .skills span{display:inline-block;background:#f0f0f0;padding:3px 9px;border-radius:4px;margin:3px 4px 0 0;font-size:12px;}
   </style></head><body>
-  <h1>${esc(p.name)||"तुझं नाव"}</h1>
+  <h1>${esc(p.name)}</h1>
   <div class="title">${esc(p.title)}</div>
   <div class="meta">${[p.email,p.phone,p.location].filter(Boolean).map(esc).join(" · ")}</div>
   ${p.summary ? `<p>${esc(p.summary)}</p>` : ""}
@@ -281,6 +282,7 @@ function portfolioMinimal(d, accent){
     body{font-family:'Inter',sans-serif;margin:0;background:#fff;color:#1a1a1a;}
     .wrap{max-width:760px;margin:0 auto;padding:80px 24px;}
     h1{font-size:40px;margin:0 0 6px;font-weight:800;}
+    h1:empty::before{content:'Your Name';color:#ccc;font-style:italic;}
     .title{color:${accent};font-weight:600;margin-bottom:20px;}
     .summary{font-size:16px;line-height:1.7;color:#444;max-width:600px;}
     section{margin-top:56px;}
@@ -293,7 +295,7 @@ function portfolioMinimal(d, accent){
     .contact{margin-top:60px;font-size:14px;color:#666;}
     a{color:${accent};}
   </style></head><body><div class="wrap">
-    <h1>${esc(p.name)||"तुझं नाव"}</h1>
+    <h1>${esc(p.name)}</h1>
     <div class="title">${esc(p.title)}</div>
     ${p.summary?`<p class="summary">${esc(p.summary)}</p>`:""}
     ${d.experience.length?`<section><h2>Experience</h2>${d.experience.map(e=>`<div class="card"><b>${esc(e.role)} · ${esc(e.company)}</b><div class="sub">${esc(e.duration)}</div><ul>${(e.points||[]).map(pt=>`<li>${esc(pt)}</li>`).join("")}</ul></div>`).join("")}</section>`:""}
@@ -313,6 +315,7 @@ function portfolioEditorial(d, accent){
     .grid{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
     .side{border-right:1px solid #ddd;padding:60px 30px;}
     .side h1{font-family:'Newsreader',serif;font-size:34px;margin:0 0 4px;}
+    .side h1:empty::before{content:'Your Name';color:#ccc;font-style:italic;}
     .side .title{color:${accent};font-weight:600;margin-bottom:16px;}
     .side p{font-size:14px;color:#555;line-height:1.6;}
     .side .contact{margin-top:30px;font-size:13px;color:#777;}
@@ -326,7 +329,7 @@ function portfolioEditorial(d, accent){
     a{color:${accent};}
   </style></head><body><div class="grid">
     <div class="side">
-      <h1>${esc(p.name)||"तुझं नाव"}</h1>
+      <h1>${esc(p.name)}</h1>
       <div class="title">${esc(p.title)}</div>
       ${p.summary?`<p>${esc(p.summary)}</p>`:""}
       <div class="contact">${[p.email,p.phone,p.location].filter(Boolean).map(esc).join("<br>")}</div>
@@ -348,6 +351,7 @@ function portfolioVivid(d, accent){
     body{font-family:'Inter',sans-serif;margin:0;background:#101014;color:#f2f2f2;}
     .hero{padding:90px 40px 60px;background:radial-gradient(circle at 20% 20%, ${accent}33, transparent 60%);}
     .hero h1{font-family:'Bricolage Grotesque',sans-serif;font-size:52px;margin:0;font-weight:800;}
+    .hero h1:empty::before{content:'Your Name';color:#555;font-style:italic;}
     .hero .title{color:${accent};font-weight:700;font-size:18px;margin-top:6px;}
     .hero p{max-width:560px;color:#ccc;font-size:16px;line-height:1.7;margin-top:18px;}
     .wrap{max-width:840px;margin:0 auto;padding:0 40px 80px;}
@@ -360,7 +364,7 @@ function portfolioVivid(d, accent){
     a{color:${accent};}
     .contact{margin-top:50px;color:#999;font-size:13px;}
   </style></head><body>
-    <div class="hero"><h1>${esc(p.name)||"तुझं नाव"}</h1><div class="title">${esc(p.title)}</div>${p.summary?`<p>${esc(p.summary)}</p>`:""}</div>
+    <div class="hero"><h1>${esc(p.name)}</h1><div class="title">${esc(p.title)}</div>${p.summary?`<p>${esc(p.summary)}</p>`:""}</div>
     <div class="wrap">
       ${d.skills.length?`<h2>Skills</h2><div class="skills">${d.skills.map(s=>`<span>${esc(s)}</span>`).join("")}</div>`:""}
       ${d.projects.length?`<h2>Projects</h2>${d.projects.map(pr=>`<div class="card"><b>${esc(pr.name)}</b><div class="sub">${pr.link?`<a href="${esc(pr.link)}">${esc(pr.link)}</a>`:""}</div><div>${esc(pr.description)}</div></div>`).join("")}`:""}
