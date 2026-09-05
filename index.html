@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptFolio — Resume & Portfolio Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand">
+      <div class="mark">P</div>
+      <div><h1>PromptFolio</h1><span data-i18n="subtitle">Prompt वरून Resume + Portfolio</span></div>
+    </div>
+    <div class="right-controls">
+      <div class="lang-toggle">
+        <button id="lang-en" data-lang="en">EN</button>
+        <button id="lang-mr" class="active" data-lang="mr">मराठी</button>
+      </div>
+      <div class="viewtabs">
+        <button id="tab-resume" class="active" data-i18n="tabResume">Resume</button>
+        <button id="tab-portfolio" data-i18n="tabPortfolio">Portfolio</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <aside>
+      <h3><span class="num">1</span><span data-i18n="step1">Resume Upload (ऐच्छिक)</span></h3>
+      <label class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept=".pdf,.docx,.txt">
+        <span class="icon">📄</span>
+        <span data-i18n="uploadText">इथे क्लिक करून PDF / DOCX टाका</span>
+        <span class="fname" id="fname"></span>
+      </label>
+
+      <h3><span class="num">2</span><span data-i18n="step2">Prompt टाका</span></h3>
+      <textarea class="prompt" id="promptBox" data-i18n-ph="promptPlaceholder" placeholder="उदा: माझं नाव Rohan Patil, मी Graphic Designer आहे, 3 वर्षांचा अनुभव Pixel Studio इथे जोडा"></textarea>
+      <div class="chips">
+        <span class="chip" data-i18n="chip1" data-p-en="Write my summary/about section in 2-3 lines, professional tone" data-p-mr="माझी summary/about section लिहून दे 2-3 ओळींत, professional टोन मध्ये">Summary लिही</span>
+        <span class="chip" data-i18n="chip2" data-p-en="Add my skills: (list your skills here)" data-p-mr="माझी skills list जोडा: (तुझी skills इथे टाक)">Skills जोडा</span>
+        <span class="chip" data-i18n="chip3" data-p-en="Add a new project with name, description and link" data-p-mr="एक नवीन project जोडा नाव, description आणि link सकट">Project जोडा</span>
+        <span class="chip" data-i18n="chip4" data-p-en="Make the portfolio bolder and more colorful, change accent color" data-p-mr="Portfolio अजून colorful आणि bold बनव, accent color बदल">Bold बनव</span>
+        <span class="chip" data-i18n="chip5" data-p-en="Simplify the language, make it easier to read" data-p-mr="सगळं थोडं सोप्या भाषेत लिही">सोप्या भाषेत</span>
+      </div>
+      <button class="primary" id="genBtn" data-i18n="genBtn">✨ AI ला सांग — Update कर</button>
+      <div class="status" id="status"></div>
+
+      <div id="portfolioOnly" style="display:none;">
+        <h3><span class="num">3</span><span data-i18n="step3">Portfolio Template</span></h3>
+        <div class="templates">
+          <div class="tpl active" data-t="minimal"><div class="swatch" style="background:#eee;"></div><span data-i18n="tplMinimal">Minimal</span></div>
+          <div class="tpl" data-t="editorial"><div class="swatch" style="background:#FAF9F6;border:1px solid #ddd;"></div><span data-i18n="tplEditorial">Editorial</span></div>
+          <div class="tpl" data-t="vivid"><div class="swatch" style="background:#101014;"></div><span data-i18n="tplVivid">Vivid</span></div>
+        </div>
+      </div>
+
+      <h3><span class="num">↓</span><span data-i18n="exportHeader">Export / Publish</span></h3>
+      <button class="secondary" id="downloadResumeBtn"><span data-i18n="downloadResume">⬇ Resume Download (HTML)</span></button>
+      <button class="secondary" id="downloadZipBtn"><span data-i18n="downloadZip">⬇ Portfolio ZIP Download</span></button>
+      <button class="secondary" id="githubBtn"><span data-i18n="githubBtn">⬆ GitHub वर Push कर</span></button>
+      <div class="note" data-i18n="exportNote">ZIP आणि GitHub दोन्हीत तयार code असतो — कुठल्याही होस्टिंगवर (GitHub Pages, Netlify, Vercel) थेट अपलोड करता येतो.</div>
+    </aside>
+
+    <section class="canvas">
+      <div class="canvas-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="url" id="canvasUrl">preview — resume.html</div>
+        <div style="width:40px"></div>
+      </div>
+      <div class="frame-wrap">
+        <iframe id="preview"></iframe>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal-overlay" id="githubModal">
+  <div class="modal">
+    <button class="close-x" id="closeModal">✕</button>
+    <h3 data-i18n="modalTitle">GitHub वर Push कर</h3>
+    <label data-i18n="ghUser">GitHub Username</label>
+    <input id="ghUser" placeholder="tumcha-username">
+    <label data-i18n="ghRepo">Repository नाव</label>
+    <input id="ghRepo" placeholder="my-portfolio">
+    <label data-i18n="ghToken">Personal Access Token (repo scope)</label>
+    <input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxx">
+    <div class="note" data-i18n="ghNote">Token कसा बनवायचा: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → "repo" scope टिक करा. Token फक्त तुझ्या ब्राउझरमधून थेट GitHub ला जातो, कुठेही save होत नाही.</div>
+    <div class="row">
+      <button class="secondary" id="ghCancel" data-i18n="cancel">रद्द कर</button>
+      <button class="primary" id="ghSubmit" data-i18n="push">Push कर</button>
+    </div>
+    <div class="status" id="ghStatus"></div>
+  </div>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>
